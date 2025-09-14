@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend  # Directorio donde se encuentra el Dockerfile del frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173" # Exponer el puerto 5173
+    volumes:
+      - ./frontend:/frontend-center
+      - /frontend-center/node_modules
+    networks:
+      - app-network
+    environment:
+      - NODE_ENV=development
+    # depends_on:
+    #   - backend  # Asegura que el backend esté levantado antes de iniciar el frontend
+
+  backend:
+    build:
+      context: ./backend  # Directorio donde se encuentra el Dockerfile del backend
+      dockerfile: Dockerfile  # Usar el Dockerfile que creamos para PHP + Symfony
+    networks:
+      - app-network
+    environment:
+      MYSQL_HOST: mysql  # Nombre del servicio de MySQL en Docker Compose
+      MYSQL_PORT: 3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: rootpassword
+      MYSQL_DATABASE: symfony_db
+    volumes:
+      - ./backend:/var/www/html  # Asegurarse de que los cambios en el código se reflejen
+    depends_on:
+      - mysql  # Asegura que MySQL esté disponible antes de iniciar el backend
+    ports:
+      - "8080:80"  # Exponer el backend en el puerto 8080
+
+  nginx:
+    image: nginx:alpine  # Usar una imagen oficial de Nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf  # Volumen para la configuración de Nginx
+      - ./nginx/sites-available:/etc/nginx/sites-available  # Volumen para los sitios de Nginx
+      - ./frontend:/frontend-center
+    ports:
+      - "80:80"  # Exponer el puerto 80 para Nginx
+    networks:
+      - app-network
+    depends_on:
+      - frontend  # Asegúrate de que el frontend esté disponible antes de iniciar Nginx
+    command: >
+      sh -c "nginx -g 'daemon off;'"
+    restart: always
+
+  mysql:
+    image: mysql:8.0  # Usar la imagen oficial de MySQL
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword  # Contraseña para el usuario root
+      MYSQL_DATABASE: symfony_db  # Base de datos inicial
+      MYSQL_PASSWORD: rootpassword  # Contraseña del usuario
+    volumes:
+      - mysql-data:/var/lib/mysql  # Persistir datos de MySQL
+    ports:
+      - "3306:3306"  # Exponer el puerto 3306
+    networks:
+      - app-network
+    restart: always
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+    driver: local
