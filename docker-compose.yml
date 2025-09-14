@@ -6,7 +6,7 @@ services:
       context: ./frontend  # Directorio donde se encuentra el Dockerfile del frontend
       dockerfile: Dockerfile
     ports:
-      - "5173:5173" # Exponer el puerto 5173
+      - "5173:5173" # Exponer el puerto 5173 -> importante para vite dev
     volumes:
       - ./frontend:/frontend-center
       - /frontend-center/node_modules

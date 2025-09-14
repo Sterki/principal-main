@@ -58,7 +58,7 @@ export default function Header() {
   return (
     <>
       <div className={styles.container}>
-        <Title title='Expenses App' />
+        <Title title='Expenses App example' />
         <div className={styles.buttons}>
           <Button
             variant='contained'

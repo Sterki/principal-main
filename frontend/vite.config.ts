@@ -10,7 +10,7 @@ export default defineConfig({
     port: 5173,
     hmr: {
       protocol: 'ws',  // Asegura que use WebSockets
-      host: 'frontend-center.local',  // Asegura que HMR funcione con el host correcto
+      host: 'frontend-center.local',  // Asegura que HMR funcione con el host correcto que definimos en el nginx.conf
       port: 5173, // Asegúrate de que coincida con el puerto de Vite
     },
     watch: {
