@@ -1,0 +1,29 @@
+# Excluir carpetas de frontend y backend (tienen sus propios repos)
+/frontend/
+/backend/
+
+# Archivos de Docker
+.docker/
+
+# Logs
+*.log
+logs/
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Variables de entorno
+.env
+.env.local
+.env.*.local
